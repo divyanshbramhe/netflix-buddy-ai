@@ -25,13 +25,15 @@ app.add_middleware(
 # LOAD DATASET
 # =========================
 
-try:
-    df = pd.read_csv("data/movies.csv")
-except Exception as e:
-    print(e)
-    df = pd.DataFrame()
+f = pd.read_csv("data/movies.csv")
 
-df.fillna("", inplace=True)
+df = df.fillna("")
+
+df = df.astype(str)
+
+# lowercase helper columns
+
+df["title_lower"] = df["Title"].str.lower()
 
 # lowercase helper columns
 
