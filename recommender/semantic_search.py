@@ -4,7 +4,7 @@ import faiss
 import pickle
 import requests
 from tqdm import tqdm
-from preprocess import preprocess_dataframe
+from recommender.preprocess import preprocess_dataframe
 import os
 
 os.makedirs("indexes", exist_ok=True)
