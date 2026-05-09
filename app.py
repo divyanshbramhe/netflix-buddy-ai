@@ -25,7 +25,7 @@ app.add_middleware(
 # LOAD DATASET
 # =========================
 
-f = pd.read_csv("data/movies.csv")
+df = pd.read_csv("data/movies.csv")
 
 df = df.fillna("")
 
