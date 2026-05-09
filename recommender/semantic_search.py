@@ -5,8 +5,11 @@ import pickle
 import requests
 from tqdm import tqdm
 from preprocess import preprocess_dataframe
+import os
 
-CSV_PATH = "/Users/apple/Downloads/Project/data/movies.csv"
+os.makedirs("indexes", exist_ok=True)
+
+CSV_PATH = "data/movies.csv"
 
 
 df = pd.read_csv(CSV_PATH)
@@ -53,10 +56,10 @@ embeddings = np.array(embeddings).astype("float32")
 index = faiss.IndexFlatL2(embeddings.shape[1])
 index.add(embeddings)
 
-faiss.write_index(index, "/Users/apple/Downloads/Project/indexes/movie_index.faiss")
+faiss.write_index(index, "indexes/movie_index.faiss")
 
-pickle.dump(texts, open("/Users/apple/Downloads/Project/indexes/docs.pkl", "wb"))
+pickle.dump(texts, open("indexes/docs.pkl", "wb"))
 
-np.save("/Users/apple/Downloads/Project/indexes/embeddings.npy", embeddings)
+np.save("indexes/embeddings.npy", embeddings)
 
 print("Index created")
