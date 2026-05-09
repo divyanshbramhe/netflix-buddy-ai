@@ -5,6 +5,7 @@ import faiss
 import pickle
 import requests
 import numpy as np
+import os
 
 from recommender.query_parser import (
     extract_year,
@@ -24,11 +25,28 @@ df = pd.read_csv("data/movies.csv")
 
 df = preprocess_dataframe(df)
 
+# AUTO CREATE INDEXES
+
+if not os.path.exists("indexes/movie_index.faiss"):
+
+    print("Indexes not found.")
+    print("Creating indexes...")
+
+    import recommender.semantic_search
+
+    print("Indexes created.")
+
 # =========================
-# LOAD FAISS
+# LOAD INDEX
 # =========================
 
-index = faiss.read_index("indexes/movie_index.faiss")
+index = faiss.read_index(
+    "indexes/movie_index.faiss"
+)
+
+docs = pickle.load(
+    open("indexes/docs.pkl", "rb")
+)
 
 docs = pickle.load(
     open("indexes/docs.pkl", "rb")
