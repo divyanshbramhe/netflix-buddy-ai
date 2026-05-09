@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Netflix Home</title>
+
+  <style>
+
+    body {
+      margin: 0;
+      background-color: #141414;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    /* =========================
+       NAVBAR
+    ========================= */
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0px 20px;
+      background: rgba(0, 0, 0, 0.9);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      height: 60px;
+      box-sizing: border-box;
+    }
+
+    .navbar img {
+      height: 35px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #b3b3b3;
+    }
+
+    /* =========================
+       NETFLIX BUDDY BUTTON
+    ========================= */
+
+    .netflix-buddy-btn {
+      background-color: #e50914;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .netflix-buddy-btn:hover {
+      background-color: #ff1f1f;
+      transform: scale(1.05);
+    }
+
+    /* =========================
+       BANNER
+    ========================= */
+
+    .banner {
+      position: relative;
+      height: 85vh;
+      background-image: url('https://mir-s3-cdn-cf.behance.net/project_modules/hd/fb762791877129.5e3cb3903fb67.gif');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: flex-end;
+      padding: 60px 40px;
+      margin-top: 60px;
+    }
+
+    .banner::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        #141414 5%,
+        transparent 50%
+      );
+    }
+
+    .banner-content {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+    }
+
+    .banner-content h1 {
+      font-size: 4rem;
+      margin-bottom: 15px;
+    }
+
+    .banner-content p {
+      line-height: 1.6;
+      font-size: 1rem;
+      margin-bottom: 25px;
+    }
+
+    .banner-buttons button {
+      margin-right: 10px;
+      padding: 12px 24px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: 0.3s;
+    }
+
+    .play-button {
+      background-color: white;
+      color: black;
+      font-weight: bold;
+    }
+
+    .play-button:hover {
+      background-color: #d9d9d9;
+    }
+
+    .info-button {
+      background-color: rgba(109, 109, 110, 0.7);
+      color: white;
+    }
+
+    .info-button:hover {
+      background-color: rgba(109, 109, 110, 1);
+    }
+
+    /* =========================
+       MOVIE ROWS
+    ========================= */
+
+    .movie-row {
+      padding: 25px 40px;
+    }
+
+    .movie-row h2 {
+      margin-bottom: 15px;
+      font-size: 22px;
+    }
+
+    .movie-thumbnails {
+      display: flex;
+      overflow-x: scroll;
+      gap: 12px;
+      scroll-behavior: smooth;
+    }
+
+    .movie-thumbnails::-webkit-scrollbar {
+      display: none;
+    }
+
+    .movie-thumbnails img {
+      width: 240px;
+      height: 135px;
+      object-fit: cover;
+      border-radius: 6px;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+
+    .movie-thumbnails img:hover {
+      transform: scale(1.08);
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 768px) {
+
+      .banner-content h1 {
+        font-size: 2.5rem;
+      }
+
+      .banner-content p {
+        width: 100%;
+      }
+
+      .movie-thumbnails img {
+        width: 180px;
+        height: 100px;
+      }
+
+      .nav-links {
+        gap: 10px;
+      }
+
+      .nav-links a {
+        font-size: 12px;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================
+       NAVBAR
+  ========================== -->
+
+  <div class="navbar">
+
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Logonetflix.png"
+      alt="Netflix Logo"
+    >
+
+    <div class="nav-links">
+
+      <a href="#">Home</a>
+      <a href="#">TV Shows</a>
+      <a href="#">Movies</a>
+      <a href="#">New & Popular</a>
+      <a href="#">My List</a>
+
+      <!-- ✅ NETFLIX BUDDY BUTTON -->
+      <button
+        class="netflix-buddy-btn"
+        onclick="openBuddy()"
+      >
+        Netflix Buddy
+      </button>
+
+    </div>
+  </div>
+
+  <!-- =========================
+       BANNER
+  ========================== -->
+
+  <section class="banner">
+
+    <div class="banner-content">
+
+      <h1>Daredevil</h1>
+
+      <p>
+        Marvel's Daredevil follows blind lawyer Matt Murdock as he fights crime
+        in Hell's Kitchen while confronting powerful enemies and corruption.
+      </p>
+
+      <div class="banner-buttons">
+
+        <button class="play-button">
+          ▶ Play
+        </button>
+
+        <button class="info-button">
+          ℹ More Info
+        </button>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
+       TRENDING NOW
+  ========================== -->
+
+  <div class="movie-row">
+
+    <h2>Trending Now</h2>
+
+    <div class="movie-thumbnails">
+
+      <img src="https://occ-0-8407-90.1.nflxso.net/dnm/api/v6/Z-WHgqd_TeJxSuha8aZ5WpyLcX8/AAAABdWejBzwyTY8b6TDhV8fS7YUtOfROMX5cuyF44z2RRD7rS4rV7NpmiFhSI76Xxh2RqNis3sfepSG2WCw4DLDMVSPM9TY3-ufOb6B.jpg?r=513">
+
+      <img src="https://www.milesweb.in/blog/wp-content/uploads/2021/09/10-insightful-Business-Growth-Learnings-From-Money-Heist.jpg">
+
+      <img src="https://occ-0-8407-90.1.nflxso.net/dnm/api/v6/9pS1daC2n6UGc3dUogvWIPMR_OU/AAAABf042BY_CTTHxRxF0YjpmOfF4I5g_ZP_C26xORkZ9S1BgoNdq9rEqWdaZLMMarAZMuj9RHKsXLafdAELsS1o1yf4aPBgYo6aIPQcdDwOB-DuO2VmvmCmcsLRDg.jpg?r=7b6">
+
+      <img src="https://picfiles.alphacoders.com/170/170956.jpg">
+
+      <img src="https://static1.colliderimages.com/wordpress/wp-content/uploads/2024/04/the-10-best-peaky-blinders-episodes-ranked.jpg">
+
+    </div>
+  </div>
+
+  <!-- =========================
+       NEW RELEASES
+  ========================== -->
+
+  <div class="movie-row">
+
+    <h2>New Releases</h2>
+
+    <div class="movie-thumbnails">
+
+      <img src="https://w0.peakpx.com/wallpaper/60/52/HD-wallpaper-matt-murdock-daredevil-2019-movie-poster-charlie-cox.jpg">
+
+      <img src="https://static.beebom.com/wp-content/uploads/2024/12/Dr-Stone-season-4-poster.jpg">
+
+      <img src="https://www.comingsoon.net/wp-content/uploads/sites/3/2023/11/Untitled-design-98-1.png">
+
+      <img src="https://www.eteknix.com/wp-content/uploads/2019/07/witcherthumb-880x526.jpg">
+
+      <img src="https://visitboise.com/wp-content/uploads/2024/07/the-notebook.jpg">
+
+    </div>
+  </div>
+
+  <!-- =========================
+       POPULAR
+  ========================== -->
+
+  <div class="movie-row">
+
+    <h2>Popular on Netflix</h2>
+
+    <div class="movie-thumbnails">
+
+      <img src="https://picsum.photos/seed/11/300/170">
+
+      <img src="https://picsum.photos/seed/12/300/170">
+
+      <img src="https://picsum.photos/seed/13/300/170">
+
+      <img src="https://picsum.photos/seed/14/300/170">
+
+      <img src="https://picsum.photos/seed/15/300/170">
+
+    </div>
+  </div>
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================== -->
+
+  <script>
+
+    // ✅ Netflix Buddy Button
+
+    function openBuddy() {
+
+      // 🔥 Opens AI Chat Page
+      window.location.href = "buddy.html";
+
+    }
+
+  </script>
+
+</body>
+</html>
