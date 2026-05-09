@@ -2,8 +2,7 @@ fastapi
 uvicorn
 pandas
 numpy
-faiss-cpu
-requests
-scikit-learn
-openai
 python-dotenv
+openai
+scikit-learn
+requests
