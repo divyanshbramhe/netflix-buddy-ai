@@ -25,7 +25,11 @@ app.add_middleware(
 # LOAD DATASET
 # =========================
 
-df = pd.read_csv("data/movies.csv")
+try:
+    df = pd.read_csv("data/movies.csv")
+except Exception as e:
+    print(e)
+    df = pd.DataFrame()
 
 df.fillna("", inplace=True)
 
