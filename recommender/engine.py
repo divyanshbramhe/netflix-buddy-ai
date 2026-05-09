@@ -1,226 +1,139 @@
-# recommender/engine.py
-
 import pandas as pd
-import faiss
-import pickle
-import requests
-import numpy as np
-import os
-
-from recommender.query_parser import (
-    extract_year,
-    extract_genre,
-    extract_language,
-    extract_rating,
-    detect_mood
-)
-
-from recommender.preprocess import preprocess_dataframe
+import re
+from difflib import get_close_matches
 
 # =========================
-# LOAD DATA
+# LOAD DATASET
 # =========================
 
 df = pd.read_csv("data/movies.csv")
 
-df = preprocess_dataframe(df)
-
-# AUTO CREATE INDEXES
-
-if not os.path.exists("indexes/movie_index.faiss"):
-
-    print("Indexes not found.")
-    print("Creating indexes...")
-
-    import recommender.semantic_search
-
-    print("Indexes created.")
-
 # =========================
-# LOAD INDEX
+# CLEAN DATA
 # =========================
 
-index = faiss.read_index(
-    "indexes/movie_index.faiss"
-)
-
-docs = pickle.load(
-    open("indexes/docs.pkl", "rb")
-)
-
-docs = pickle.load(
-    open("indexes/docs.pkl", "rb")
-)
+df.fillna("", inplace=True)
 
 # =========================
-# EMBEDDING
+# LOWERCASE HELPER COLUMNS
 # =========================
 
-def get_embedding(text):
+df["title_lower"] = df["Title"].astype(str).str.lower()
 
-    response = requests.post(
-        "http://localhost:11434/api/embeddings",
-        json={
-            "model": "nomic-embed-text",
-            "prompt": text
-        }
-    )
+df["genre_lower"] = df["Genre"].astype(str).str.lower()
 
-    data = response.json()
+df["overview_lower"] = df["Overview"].astype(str).str.lower()
 
-    return data["embedding"]
+df["language_lower"] = df["Original_Language"].astype(str).str.lower()
+
+df["director_lower"] = df["Director"].astype(str).str.lower()
+
+df["cast_lower"] = df["Cast"].astype(str).str.lower()
 
 # =========================
-# EXACT TITLE SEARCH
+# QUERY PARSER
 # =========================
 
-def exact_title_search(query):
+def extract_year(query):
 
-    q = query.lower()
+    match = re.search(r"(19\d{2}|20\d{2})", query)
 
-    for _, row in df.iterrows():
-
-        title = str(row["Title"]).lower().strip()
-
-        # ignore tiny titles
-        if len(title) < 3:
-            continue
-
-        if f" {title} " in f" {q} ":
-            return row
+    if match:
+        return int(match.group())
 
     return None
 
-# =========================
-# STRUCTURED SEARCH
-# =========================
 
-def structured_search(query):
+def extract_rating(query):
 
-    result = df.copy()
+    match = re.search(r"(?:more than|above|greater than)\s*(\d+(\.\d+)?)", query)
 
-    year = extract_year(query)
+    if match:
+        return float(match.group(1))
 
-    genre = extract_genre(query)
+    return None
 
-    lang = extract_language(query)
-
-    rating = extract_rating(query)
-
-    mood = detect_mood(query)
-
-    # =========================
-    # GENRE FILTER
-    # =========================
-
-    if genre:
-
-        result = result[
-            result["Genre"].str.contains(
-                genre,
-                case=False,
-                na=False
-            )
-        ]
-
-    # =========================
-    # YEAR FILTER
-    # =========================
-
-    if year:
-
-        result = result[
-            result["release_year"] == year
-        ]
-
-    # =========================
-    # LANGUAGE FILTER
-    # =========================
-
-    if lang:
-
-        result = result[
-            result["Original_Language"]
-            .str.contains(
-                lang,
-                case=False,
-                na=False
-            )
-        ]
-
-    # =========================
-    # RATING FILTER
-    # =========================
-
-    if rating:
-
-        result = result[
-            result["Vote_Average"] >= rating
-        ]
-
-    # =========================
-    # MOOD FILTER
-    # =========================
-
-    if mood:
-
-        if mood == "happy":
-
-            result = result[
-                result["Genre"].str.contains(
-                    "Comedy|Family|Animation",
-                    case=False,
-                    na=False
-                )
-            ]
-
-        elif mood == "romance":
-
-            result = result[
-                result["Genre"].str.contains(
-                    "Romance",
-                    case=False,
-                    na=False
-                )
-            ]
-
-        elif mood == "scary":
-
-            result = result[
-                result["Genre"].str.contains(
-                    "Horror|Thriller",
-                    case=False,
-                    na=False
-                )
-            ]
-
-    # =========================
-    # SORTING
-    # =========================
-
-    result = result.sort_values(
-        by=[
-            "Vote_Average",
-            "Vote_Count"
-        ],
-        ascending=False
-    )
-
-    return result.head(5)
 
 # =========================
-# SEMANTIC SEARCH
+# MOOD DETECTION
 # =========================
 
-def semantic_search(query, k=5):
+def detect_mood(query):
 
-    emb = np.array([
-        get_embedding(query)
-    ]).astype("float32")
+    query = query.lower()
 
-    _, idx = index.search(emb, k)
+    if any(word in query for word in [
+        "sad",
+        "depressed",
+        "upset",
+        "lonely",
+        "crying"
+    ]):
+        return "feel good"
 
-    return df.iloc[idx[0]]
+    if any(word in query for word in [
+        "scared",
+        "horror",
+        "ghost",
+        "thriller"
+    ]):
+        return "horror"
+
+    if any(word in query for word in [
+        "romantic",
+        "love",
+        "relationship"
+    ]):
+        return "romance"
+
+    if any(word in query for word in [
+        "funny",
+        "comedy",
+        "laugh"
+    ]):
+        return "comedy"
+
+    return None
+
+
+# =========================
+# TITLE SEARCH
+# =========================
+
+def find_movie(query):
+
+    query = query.lower().strip()
+
+    # exact match
+
+    exact = df[df["title_lower"] == query]
+
+    if len(exact) > 0:
+        return exact
+
+    # partial match
+
+    partial = df[
+        df["title_lower"].str.contains(query, na=False)
+    ]
+
+    if len(partial) > 0:
+        return partial.head(5)
+
+    # fuzzy match
+
+    titles = df["title_lower"].tolist()
+
+    close = get_close_matches(query, titles, n=1, cutoff=0.7)
+
+    if close:
+
+        fuzzy = df[df["title_lower"] == close[0]]
+
+        return fuzzy
+
+    return pd.DataFrame()
+
 
 # =========================
 # MAIN RECOMMENDER
@@ -228,28 +141,215 @@ def semantic_search(query, k=5):
 
 def recommend(query):
 
-    # =========================
-    # 1. EXACT TITLE
-    # =========================
-
-    exact = exact_title_search(query)
-
-    if exact is not None:
-
-        return pd.DataFrame([exact])
+    query_lower = query.lower()
 
     # =========================
-    # 2. STRUCTURED FILTERING
+    # 1. MOVIE INFO REQUEST
     # =========================
 
-    structured = structured_search(query)
+    info_keywords = [
+        "tell me about",
+        "overview",
+        "about movie",
+        "story of",
+        "plot of"
+    ]
 
-    if len(structured) > 0:
+    if any(k in query_lower for k in info_keywords):
 
-        return structured
+        cleaned = query_lower
+
+        for k in info_keywords:
+            cleaned = cleaned.replace(k, "")
+
+        cleaned = cleaned.strip()
+
+        result = find_movie(cleaned)
+
+        if len(result) == 0:
+
+            return {
+                "answer": "Movie not found in dataset."
+            }
+
+        row = result.iloc[0]
+
+        answer = f"""
+🎬 {row['Title']} ({row['release_year']})
+
+⭐ Rating: {row['Vote_Average']}
+
+🎭 Genre: {row['Genre']}
+
+📝 Overview:
+{row['Overview']}
+"""
+
+        return {
+            "answer": answer
+        }
 
     # =========================
-    # 3. SEMANTIC FALLBACK
+    # 2. FILTERING
     # =========================
 
-    return semantic_search(query)
+    filtered = df.copy()
+
+    # genre filtering
+
+    genres = [
+        "action",
+        "thriller",
+        "horror",
+        "romance",
+        "comedy",
+        "drama",
+        "sci-fi",
+        "science fiction",
+        "crime",
+        "adventure",
+        "animation",
+        "family",
+        "fantasy",
+        "mystery",
+        "war",
+        "history"
+    ]
+
+    for genre in genres:
+
+        if genre in query_lower:
+
+            if genre == "science fiction":
+                genre = "sci-fi"
+
+            filtered = filtered[
+                filtered["genre_lower"].str.contains(
+                    genre,
+                    na=False
+                )
+            ]
+
+    # language filtering
+
+    if "bollywood" in query_lower or "hindi" in query_lower:
+
+        filtered = filtered[
+            filtered["language_lower"].str.contains(
+                "hi",
+                na=False
+            )
+        ]
+
+    if "english" in query_lower:
+
+        filtered = filtered[
+            filtered["language_lower"].str.contains(
+                "en",
+                na=False
+            )
+        ]
+
+    # year filtering
+
+    year = extract_year(query)
+
+    if year:
+
+        filtered = filtered[
+            filtered["release_year"] == year
+        ]
+
+    # rating filtering
+
+    rating = extract_rating(query)
+
+    if rating:
+
+        filtered = filtered[
+            filtered["Vote_Average"] >= rating
+        ]
+
+    # mood filtering
+
+    mood = detect_mood(query)
+
+    if mood == "feel good":
+
+        filtered = filtered[
+            filtered["genre_lower"].str.contains(
+                "comedy|family|animation|adventure",
+                na=False,
+                regex=True
+            )
+        ]
+
+    elif mood == "horror":
+
+        filtered = filtered[
+            filtered["genre_lower"].str.contains(
+                "horror|thriller",
+                na=False,
+                regex=True
+            )
+        ]
+
+    elif mood == "romance":
+
+        filtered = filtered[
+            filtered["genre_lower"].str.contains(
+                "romance",
+                na=False
+            )
+        ]
+
+    elif mood == "comedy":
+
+        filtered = filtered[
+            filtered["genre_lower"].str.contains(
+                "comedy",
+                na=False
+            )
+        ]
+
+    # =========================
+    # 3. SORTING
+    # =========================
+
+    filtered = filtered.sort_values(
+        by="Vote_Average",
+        ascending=False
+    )
+
+    # =========================
+    # 4. FINAL RESPONSE
+    # =========================
+
+    if len(filtered) == 0:
+
+        return {
+            "answer": "No matching movies found in dataset."
+        }
+
+    top_movies = filtered.head(5)
+
+    response = ""
+
+    for _, row in top_movies.iterrows():
+
+        response += f"""
+🎬 {row['Title']} ({row['release_year']})
+
+⭐ Rating: {row['Vote_Average']}
+
+🎭 Genre: {row['Genre']}
+
+📝 {row['Overview']}
+
+-----------------------------------
+
+"""
+
+    return {
+        "answer": response
+    }
