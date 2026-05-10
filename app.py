@@ -27,10 +27,24 @@ def ask(q: str):
 
     movies = recommend(q)
 
-    answer = generate_response(q, movies)
+    if not movies:
+
+        return {
+            "question": q,
+            "answer": "No matching movies found."
+        }
+
+    try:
+
+        answer = generate_response(q, movies)
+
+    except Exception as e:
+
+        print(e)
+
+        answer = "\n\n".join(movies[:5])
 
     return {
         "question": q,
         "answer": answer
-
     }
