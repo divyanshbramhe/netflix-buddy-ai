@@ -27,7 +27,7 @@ def ask(q: str):
 
     movies = recommend(q)
 
-    if not movies:
+    if movies.empty:
 
         return {
             "question": q,
@@ -42,7 +42,7 @@ def ask(q: str):
 
         print("LLM ERROR:", e)
 
-        answer = str(movies[:5])
+        answer = movies.head(5).to_string()
 
     return {
         "question": q,
