@@ -394,44 +394,41 @@
     // =========================
     // ASK AI
     // =========================
+async function askAI() {
 
-    async function askAI() {
+    const q = document.getElementById("query").value;
 
-      const q = document.getElementById("query").value;
+    const responseBox =
+        document.getElementById("response");
 
-      const responseBox = document.getElementById("response");
+    responseBox.innerHTML = "Thinking...";
 
-      if (!q) {
-
-        responseBox.innerHTML = "Please enter a question.";
-
-        return;
-      }
-
-      responseBox.innerHTML =
-        "<span class='loading'>Thinking...</span>";
-
-      try {
-
-        // 🔥 CHANGE THIS URL AFTER DEPLOYMENT
+    try {
 
         const response = await fetch(
-    `https://netflix-buddy-ai.onrender.com/ask?q=${encodeURIComponent(q)}`
+            `https://netflix-buddy-ai.onrender.com/ask?q=${encodeURIComponent(q)}`
         );
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server Error"
+            );
+        }
+
         const data = await response.json();
 
-        responseBox.innerHTML = data.answer;
+        responseBox.innerHTML =
+            data.answer || "No answer found.";
 
-      }
+    } catch (error) {
 
-      catch (err) {
-
-        console.error(err);
+        console.error(error);
 
         responseBox.innerHTML =
-          "⚠️ Could not connect to AI server.";
-      }
+            "⚠️ Server is waking up. Please try again in 10 seconds.";
     }
+}
 
   </script>
 
