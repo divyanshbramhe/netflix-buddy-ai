@@ -416,11 +416,8 @@
         // 🔥 CHANGE THIS URL AFTER DEPLOYMENT
 
         const response = await fetch(
-
-          `http://127.0.0.1:8000/ask?q=${encodeURIComponent(q)}`
-
+    `https://netflix-buddy-ai.onrender.com/ask?q=${encodeURIComponent(q)}`
         );
-
         const data = await response.json();
 
         responseBox.innerHTML = data.answer;
