@@ -1,3 +1,350 @@
+
+
+
+I have a dataset in CSv format, how can I convert this data suitable for fine tuning a LLM
+
+why recommender/engine.py is giving the error 
+
+I have an html file, in that there is a button "Netflix Buddy" as shown in image, how can I link my project there and how can I make this website live, so that I can add the link in my resume and anyone clicking on that will be able to see the website and after that will be able to tap the netflix buddy 
+
+
+Pasted text(14).txt
+Document
+I have attached the html can you please add HTML BUTTON
+
+buddy.html in vs code why it is showing like this, 
+
+this is the result
+
+what should I select here 
+
+
+Test:
+
+
+Pasted text(15).txt
+Document
+
+
+Pasted text(16).txt
+Document
+
+
+Pasted text(17).txt
+Document
+
+
+
+
+TEST URLS
+
+not working 
+
+why it is looking like this 
+
+this is the screen shot from render 
+
+why it is showing like this in Netlify
+
+what to fill here 
+
+what should I fill here
+
+why it is showing like this
+
+is it this ?
+
+That’s because your current CSS is probably desktop-only:
+
+fixed widths
+
+large font sizes
+
+horizontal layout
+
+no responsive media queries
+
+You now need to make the frontend responsive for mobile screens.
+
+🚀 QUICK FIXES
+✅ 1. ADD VIEWPORT META TAG
+Inside <head> add:
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+VERY important for mobile scaling.
+
+✅ 2. MAKE INPUT + BUTTON STACK ON MOBILE
+Find your input container CSS and add:
+
+.search-box {
+    display: flex;
+    gap: 12px;
+}
+Then add this BELOW it:
+
+@media (max-width: 768px) {
+
+    .search-box {
+
+        flex-direction: column;
+    }
+
+}
+✅ 3. REDUCE HUGE TITLE SIZE
+Replace:
+
+h1 {
+    font-size: 80px;
+}
+WITH:
+
+h1 {
+    font-size: clamp(36px, 8vw, 80px);
+}
+This automatically scales on mobile.
+
+✅ 4. MAKE CONTAINER RESPONSIVE
+Replace fixed widths like:
+
+width: 1200px;
+WITH:
+
+width: 90%;
+max-width: 1200px;
+margin: auto;
+✅ 5. BUTTON FULL WIDTH ON MOBILE
+Add:
+
+@media (max-width: 768px) {
+
+    button {
+
+        width: 100%;
+    }
+
+}
+🚀 BEST SIMPLE MOBILE CSS
+Add this at the END of your CSS:
+
+@media (max-width: 768px) {
+
+    body {
+
+        padding: 20px;
+    }
+
+    h1 {
+
+        font-size: 42px;
+        line-height: 1.1;
+    }
+
+    .search-box {
+
+        flex-direction: column;
+    }
+
+    input {
+
+        width: 100%;
+        font-size: 18px;
+    }
+
+    button {
+
+        width: 100%;
+        padding: 16px;
+    }
+
+    .response-box {
+
+        font-size: 16px;
+    }
+}
+🚀 AFTER THAT
+Push again:
+
+git add .
+
+git commit -m "Add mobile responsive design"
+
+git push origin main
+Netlify auto redeploys.
+
+🎯 RESULT
+Your site will:
+✅ look good on phones
+✅ stack properly vertically
+✅ scale text correctly
+✅ feel like a real app
+✅ become much more portfolio-worthy
+
+
+buddy.html is fine,
+
+only index.html is not looking good 
+
+Your buddy.html is already responsive enough.
+
+The problem is your index.html hero section:
+
+oversized background image
+
+fixed desktop layout
+
+navbar overflowing
+
+huge Netflix text/image scaling badly
+
+From the screenshot:
+
+navbar items are squeezing
+
+hero image is too zoomed
+
+content spacing is desktop-sized
+
+🚀 FIX index.html
+Add these changes.
+
+✅ 1. ADD VIEWPORT META TAG
+Inside <head>:
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+✅ 2. FIX HERO IMAGE
+Find your hero/banner CSS.
+
+Probably something like:
+
+.hero {
+    height: 100vh;
+    background-size: cover;
+}
+Replace with:
+
+.hero {
+
+    min-height: 100vh;
+
+    background-size: cover;
+
+    background-position: center;
+
+    background-repeat: no-repeat;
+
+    padding: 80px 20px;
+}
+✅ 3. FIX NAVBAR MOBILE OVERFLOW
+Add this:
+
+@media (max-width: 768px) {
+
+    nav {
+
+        padding: 12px 16px;
+
+        gap: 10px;
+
+        overflow-x: auto;
+    }
+
+    nav a {
+
+        font-size: 15px;
+
+        white-space: nowrap;
+    }
+
+    .logo {
+
+        font-size: 32px;
+    }
+}
+✅ 4. FIX HUGE NETFLIX IMAGE/TEXT
+Add:
+
+@media (max-width: 768px) {
+
+    .hero img {
+
+        width: 100%;
+
+        max-width: 400px;
+
+        height: auto;
+    }
+
+    .hero h1 {
+
+        font-size: 48px;
+    }
+
+    .hero p {
+
+        font-size: 18px;
+
+        line-height: 1.5;
+    }
+}
+✅ 5. FIX CONTENT SPACING
+Add:
+
+@media (max-width: 768px) {
+
+    .hero-content {
+
+        margin-top: 120px;
+
+        padding: 0 20px;
+    }
+}
+🚀 MOST IMPORTANT FIX
+Your background image is zooming too much on mobile.
+
+So add:
+
+@media (max-width: 768px) {
+
+    .hero {
+
+        background-position: top center;
+    }
+}
+This alone will improve the look a lot.
+
+🚀 AFTER THAT
+Push again:
+
+git add .
+
+git commit -m "Fix mobile responsiveness"
+
+git push origin main
+Netlify auto updates.
+
+
+
+Pasted text(19).txt
+Document
+this the fully index.html please modify it and give 
+
+Here is your fully improved and mobile-responsive index.html.
+I fixed:
+
+✅ mobile navbar overflow
+✅ banner scaling
+✅ image zoom issue
+✅ better responsive layout
+✅ Netflix Buddy button on mobile
+✅ horizontal scrolling navbar
+✅ cleaner spacing
+✅ smoother UI
+
+Based on your uploaded file 
+
+
+Replace your entire current index.html with this:
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -475,3 +822,94 @@
 
 </body>
 </html>
+
+<img
+  src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Logonetflix.png"
+  alt="Netflix Logo"
+>
+
+<div class="nav-links">
+
+  <a href="#">Home</a>
+  <a href="#">TV Shows</a>
+  <a href="#">Movies</a>
+  <a href="#">New & Popular</a>
+  <a href="#">My List</a>
+
+  <!-- ✅ NETFLIX BUDDY BUTTON -->
+  <button
+    class="netflix-buddy-btn"
+    onclick="openBuddy()"
+  >
+    Netflix Buddy
+  </button>
+
+</div>
+<div class="banner-content">
+
+  <h1>Daredevil</h1>
+
+  <p>
+    Marvel's Daredevil follows blind lawyer Matt Murdock as he fights crime
+    in Hell's Kitchen while confronting powerful enemies and corruption.
+  </p>
+
+  <div class="banner-buttons">
+
+    <button class="play-button">
+      ▶ Play
+    </button>
+
+    <button class="info-button">
+      ℹ More Info
+    </button>
+
+  </div>
+</div>
+<h2>Trending Now</h2>
+
+<div class="movie-thumbnails">
+
+  <img src="https://occ-0-8407-90.1.nflxso.net/dnm/api/v6/Z-WHgqd_TeJxSuha8aZ5WpyLcX8/AAAABdWejBzwyTY8b6TDhV8fS7YUtOfROMX5cuyF44z2RRD7rS4rV7NpmiFhSI76Xxh2RqNis3sfepSG2WCw4DLDMVSPM9TY3-ufOb6B.jpg?r=513">
+
+  <img src="https://www.milesweb.in/blog/wp-content/uploads/2021/09/10-insightful-Business-Growth-Learnings-From-Money-Heist.jpg">
+
+  <img src="https://occ-0-8407-90.1.nflxso.net/dnm/api/v6/9pS1daC2n6UGc3dUogvWIPMR_OU/AAAABf042BY_CTTHxRxF0YjpmOfF4I5g_ZP_C26xORkZ9S1BgoNdq9rEqWdaZLMMarAZMuj9RHKsXLafdAELsS1o1yf4aPBgYo6aIPQcdDwOB-DuO2VmvmCmcsLRDg.jpg?r=7b6">
+
+  <img src="https://picfiles.alphacoders.com/170/170956.jpg">
+
+  <img src="https://static1.colliderimages.com/wordpress/wp-content/uploads/2024/04/the-10-best-peaky-blinders-episodes-ranked.jpg">
+
+</div>
+<h2>New Releases</h2>
+
+<div class="movie-thumbnails">
+
+  <img src="https://w0.peakpx.com/wallpaper/60/52/HD-wallpaper-matt-murdock-daredevil-2019-movie-poster-charlie-cox.jpg">
+
+  <img src="https://static.beebom.com/wp-content/uploads/2024/12/Dr-Stone-season-4-poster.jpg">
+
+  <img src="https://www.comingsoon.net/wp-content/uploads/sites/3/2023/11/Untitled-design-98-1.png">
+
+  <img src="https://www.eteknix.com/wp-content/uploads/2019/07/witcherthumb-880x526.jpg">
+
+  <img src="https://visitboise.com/wp-content/uploads/2024/07/the-notebook.jpg">
+
+</div>
+<h2>Popular on Netflix</h2>
+
+<div class="movie-thumbnails">
+
+  <img src="https://picsum.photos/seed/11/300/170">
+
+  <img src="https://picsum.photos/seed/12/300/170">
+
+  <img src="https://picsum.photos/seed/13/300/170">
+
+  <img src="https://picsum.photos/seed/14/300/170">
+
+  <img src="https://picsum.photos/seed/15/300/170">
+
+</div>
+
+Close
