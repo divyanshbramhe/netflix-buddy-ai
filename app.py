@@ -40,9 +40,9 @@ def ask(q: str):
 
     except Exception as e:
 
-        print(e)
+        print("LLM ERROR:", e)
 
-        answer = "\n\n".join(movies[:5])
+        answer = str(movies[:5])
 
     return {
         "question": q,
