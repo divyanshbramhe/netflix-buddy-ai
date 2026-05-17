@@ -22,7 +22,7 @@ client = OpenAI(
 # MODEL
 # =========================
 
-MODEL = "inclusionai/ring-2.6-1t:free"
+MODEL = "deepseek/deepseek-v4-flash:free"
 
 # =========================
 # GENERATE RESPONSE
