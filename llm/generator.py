@@ -12,9 +12,9 @@ load_dotenv()
 
 client = OpenAI(
 
-    base_url="https://openrouter.ai/api/v1",
+    base_url="https://integrate.api.nvidia.com/v1",
 
-    api_key=os.getenv("OPENROUTER_API_KEY")
+    api_key=os.getenv("NVIDIA_API_KEY")
 
 )
 
@@ -22,7 +22,7 @@ client = OpenAI(
 # MODEL
 # =========================
 
-MODEL = "deepseek/deepseek-v4-flash:free"
+MODEL = "nvidia/nemotron-mini-4b-instruct"
 
 # =========================
 # GENERATE RESPONSE
@@ -81,9 +81,10 @@ Answer:
             }
         ],
 
-        temperature=0.3,
-
-        max_tokens=300
+        temperature=0.2,
+        top_p=0.7,
+        max_tokens=3000,
+        stream=False
     )
 
     return response.choices[0].message.content
