@@ -67,7 +67,7 @@ Instructions:
 - Mention ratings when useful
 - Do NOT invent movies
 - Only use movies from context
-- Don't say "Based on the movie dataset context" instead you can say "I'd recommend"
+- Don't say "Based on the movie dataset context".
 - Dont say Based on provided context.
 
 Answer:
